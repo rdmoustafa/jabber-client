@@ -40,7 +40,7 @@ public class UserPageController extends ScheduledService<Void> implements Initia
         settingTimeline(gettingServerInfo("timeline"));
         settingWhoToFollow(gettingServerInfo("users"));
 
-        setPeriod(Duration.seconds(5));
+        setPeriod(Duration.seconds(2));
         start();
     }
 

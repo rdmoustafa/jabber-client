@@ -10,7 +10,7 @@ public class StreamManager {
     /**
      * Exchange carries out the whole process of sending a message and receiving a reply from the server
      * @param message user command
-     * @return the mystuff.JabberMessage object that the server returns
+     * @return the JabberMessage object that the server returns
      */
     public JabberMessage exchangeMessages(final String message) {
         sendMessage(message);

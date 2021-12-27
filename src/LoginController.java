@@ -17,39 +17,42 @@ public class LoginController {
     private static String currentUser;
     private final StreamManager sm = new StreamManager();
 
-    @FXML private TextField username;
+    @FXML private TextField username, password;
     @FXML private Label loginStatus, popupLabel;
     @FXML private Pane popUp;
     @FXML private Button signInB, registerB;
 
     /**
-     * TODO add functionality to take in password
      * Function that is connected to sign in and register buttons
      * This will send the appropriate message to server and go through the sign in or registration process
      * @param event the button click on sign in or register
      */
     @FXML
     private void buttonResponse(ActionEvent event) {
-        String un = username.getText();
-        if (un.equals("")) { // If the user didn't enter anything
+        String un = username.getText().toLowerCase();
+        String pw = password.getText();
+        if (un.equals("") || pw.equals("")) { // If the user didn't enter anything
             popupLabel.setText("You failed. You didn't enter anything, try again");
             popUp.setVisible(true);
         }
         else if (event.getSource().equals(signInB)) { // User pressed on the sign in button
-            String response = sm.exchangeMessages("signin " + un).getMessage();
-            if ("signedin".equals(response)) {// Sign in successful
-                setCurrentUser(un);
-                loginStatus.setText("Sign in Successful. Welcome " + un);
-                switchScene(event);
-            }
-            else { // Sign in not successful - username doesn't exist
-                loginStatus.setText("Username: " + un + " does not exist");
-                popupLabel.setText("You entered a username that doesn't exist, try again");
-                popUp.setVisible(true);
+            String response = sm.exchangeMessages("signin " + un + " " + pw).getMessage();
+            switch (response) {
+                case "signedin" -> { // Sign in successful
+                    setCurrentUser(un);
+                    loginStatus.setText("Sign in Successful. Welcome " + un);
+                    switchScene(event);
+                }
+                case "unknown-user" -> {  // Sign in not successful - username doesn't exist
+                    loginStatus.setText("Username: " + un + " does not exist");
+                    popupLabel.setText("You entered a username that doesn't exist, try again");
+                    popUp.setVisible(true);
+                }
+                case "incorrect-password" -> loginStatus.setText("You entered the wrong password"); // wrong pw
             }
         }
         else if (event.getSource().equals(registerB)) { // User pressed register button
-            String response = sm.exchangeMessages("register " + un).getMessage();
+            String response = sm.exchangeMessages("register " + un + " " + pw).getMessage();
             if (response.equals("signedin")) { // Registration successful
                 setCurrentUser(un);
                 switchScene(event);

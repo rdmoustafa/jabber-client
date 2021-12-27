@@ -18,6 +18,11 @@
          <font>
             <Font size="24.0" />
          </font></TextField>
+      <TextField fx:id="password" alignment="CENTER" layoutX="287.0" layoutY="275.0" prefHeight="60.0" prefWidth="271.0" promptText="Enter your password">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </TextField>
       <Button fx:id="signInB" layoutX="166.0" layoutY="386.0" mnemonicParsing="false" onAction="#buttonResponse" prefHeight="58.0" prefWidth="121.0" text="Sign In">
          <font>
             <Font size="23.0" />
@@ -26,17 +31,12 @@
          <font>
             <Font size="23.0" />
          </font></Button>
-      <Label fx:id="loginStatus" alignment="TOP_CENTER" layoutX="281.0" layoutY="130.0" prefHeight="30.0" prefWidth="312.0" textAlignment="CENTER" wrapText="true">
+      <Label fx:id="loginStatus" alignment="CENTER" contentDisplay="CENTER" layoutX="-3.0" layoutY="130.0" prefHeight="30.0" prefWidth="839.0" textAlignment="CENTER" wrapText="true">
          <font>
             <Font size="25.0" />
          </font>
       </Label>
-      <TextField alignment="CENTER" layoutX="287.0" layoutY="275.0" prefHeight="60.0" prefWidth="271.0" promptText="Enter your password">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </TextField>
-      <Pane fx:id="popUp" visible="false" focusTraversable="true" layoutX="215.0" layoutY="118.0" prefHeight="287.0" prefWidth="410.0" style="-fx-border-color: black; -fx-background-color: white;">
+      <Pane fx:id="popUp" focusTraversable="true" layoutX="215.0" layoutY="118.0" prefHeight="287.0" prefWidth="410.0" style="-fx-border-color: black; -fx-background-color: white;" visible="false">
          <children>
             <Label fx:id="popupLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="66.0" layoutY="37.0" prefHeight="205.0" prefWidth="268.0" text="Error" wrapText="true">
                <font>
