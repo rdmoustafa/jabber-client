@@ -1,7 +1,10 @@
+import com.sun.javafx.scene.shape.ArcHelper;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class StreamManager {
 
@@ -14,6 +17,11 @@ public class StreamManager {
      */
     public JabberMessage exchangeMessages(final String message) {
         sendMessage(message);
+        return getReply();
+    }
+
+    public JabberMessage exchangeMessages(final String message, final ArrayList<ArrayList<String>> data) {
+        sendMessage(message, data);
         return getReply();
     }
 
@@ -30,6 +38,20 @@ public class StreamManager {
         }
         catch (IOException e) { e.printStackTrace(); }
 
+    }
+
+    /**
+     * Sends a message and data to the server
+     * @param message user command
+     * @param data user information
+     */
+    private void sendMessage(final String message, final ArrayList<ArrayList<String>> data) {
+        try {
+            ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
+
+            outStream.writeObject(new JabberMessage(message, data));
+            outStream.flush();
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     /**

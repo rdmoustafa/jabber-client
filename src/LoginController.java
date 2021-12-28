@@ -33,67 +33,62 @@ public class LoginController {
         popupLabel.setTextAlignment(TextAlignment.CENTER);
         String un = username.getText().toLowerCase();
         String pw = password.getText();
-        if (un.equals("") || pw.equals("")) { // If the user didn't enter anything
+        if (event.getSource().equals(registerB)) switchScene(event, "register"); // User pressed register button
+        else if (un.equals("") || pw.equals("")) { // If the user didn't enter anything
             popupLabel.setText("You failed. You didn't enter anything, try again");
             popUp.setVisible(true);
         }
-        else if (event.getSource().equals(signInB)) { // User pressed on the sign in button
-            String response = sm.exchangeMessages("signin " + un + " " + pw).getMessage();
-            switch (response) {
-                case "signedin" -> { // Sign in successful
-                    setCurrentUser(un);
-                    loginStatus.setText("Sign in Successful. Welcome " + un);
-                    switchScene(event);
-                }
-                case "unknown-user" -> {  // Sign in not successful - username doesn't exist
-                    loginStatus.setText("Username: " + un + " does not exist");
-                    popupLabel.setText("You entered a username that doesn't exist, try again");
-                    popUp.setVisible(true);
-                }
-                case "incorrect-password" -> loginStatus.setText("You entered the wrong password"); // wrong pw
+        else if (event.getSource().equals(signInB)) signIn(event, un, pw); // User pressed on the sign in button
+    }
+
+    /**
+     * Signing in a user after they press the sign in button
+     * @param event pressing the sign in button
+     * @param un username that the user is logging in to
+     * @param pw password that the user enters
+     */
+    private void signIn(ActionEvent event, String un, String pw) {
+        String response = sm.exchangeMessages("signin " + un + " " + pw).getMessage();
+        switch (response) {
+            case "signedin" -> { // Sign in successful
+                setCurrentUser(un);
+                loginStatus.setText("Sign in Successful. Welcome " + un);
+                switchScene(event, "signin");
             }
-        }
-        else if (event.getSource().equals(registerB)) { // User pressed register button
-            String response = sm.exchangeMessages("register " + un + " " + pw).getMessage();
-            switch (response) {
-                case "signedin" -> {  // Registration successful
-                    setCurrentUser(un);
-                    switchScene(event);
-                }
-                case "invalid-username" -> {
-                    loginStatus.setText("Username" + un + "is already taken, try a different username");
-                    popupLabel.setText("Invalid username, try again");
-                    popUp.setVisible(true);
-                }
-                case "invalid-password" -> {
-                    loginStatus.setText("Your password needs to have 5 characters where one of which is a number");
-                    popupLabel.setText("Invalid password, try a different password");
-                    popUp.setVisible(true);
-                }
-                default -> {  // Registration failed
-                    loginStatus.setText("Registration Failed");
-                    popupLabel.setText("Registration Failed, try again");
-                    popUp.setVisible(true);
-                }
+            case "unknown-user" -> {  // Sign in not successful - username doesn't exist
+                loginStatus.setText("Username: " + un + " does not exist");
+                popupLabel.setText("You entered a username that doesn't exist, try again");
+                popUp.setVisible(true);
             }
+            case "incorrect-password" -> loginStatus.setText("You entered the wrong password"); // wrong pw
         }
     }
 
     /**
      * Function will switch between the Login page and the User page
      * @param event the action being passed in -> button click in this case?
+     * @param command the command being passed to indicate signin or register
      */
-    private void switchScene(ActionEvent event) {
+    private void switchScene(ActionEvent event, final String command) {
         try {
             ((Node)event.getSource()).getScene().getWindow().hide();
             Stage stage = new Stage();
             stage.setResizable(false);
             FXMLLoader loader = new FXMLLoader();
-            Pane root = loader.load(Objects.requireNonNull(getClass().getResource("UserPage.fxml")).openStream());
-            Scene scene = new Scene(root);
-            stage.setTitle("Welcome to Jabber " + getCurrentUser());
-            stage.setScene(scene);
-            stage.show();
+            if (command.equals("signin")) { // Sign in and switch to user page
+                Pane root = loader.load(Objects.requireNonNull(getClass().getResource("UserPage.fxml")).openStream());
+                Scene scene = new Scene(root);
+                stage.setTitle("Welcome to Jabber " + getCurrentUser());
+                stage.setScene(scene);
+                stage.show();
+            }
+            else if (command.equals("register")) { // Switch to registration page
+                Pane root = loader.load(Objects.requireNonNull(getClass().getResource("Register.fxml")).openStream());
+                Scene scene = new Scene(root);
+                stage.setTitle("Register for Jabber!");
+                stage.setScene(scene);
+                stage.show();
+            }
         }
         catch (IOException e) { e.printStackTrace(); }
 
@@ -102,9 +97,10 @@ public class LoginController {
     /**
      * Closes the popup that appears when the sign in or registration fails
      */
-    public void closePopUp() { popUp.setVisible(false); }
+    @FXML
+    private void closePopUp() { popUp.setVisible(false); }
 
     // Getters and Setters
-    public String getCurrentUser() { return currentUser; }
-    public void setCurrentUser(String currentUser) { LoginController.currentUser = currentUser; }
+    private String getCurrentUser() { return currentUser; }
+    private void setCurrentUser(String currentUser) { LoginController.currentUser = currentUser; }
 }
