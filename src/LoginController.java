@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -29,6 +30,7 @@ public class LoginController {
      */
     @FXML
     private void buttonResponse(ActionEvent event) {
+        popupLabel.setTextAlignment(TextAlignment.CENTER);
         String un = username.getText().toLowerCase();
         String pw = password.getText();
         if (un.equals("") || pw.equals("")) { // If the user didn't enter anything
@@ -53,14 +55,26 @@ public class LoginController {
         }
         else if (event.getSource().equals(registerB)) { // User pressed register button
             String response = sm.exchangeMessages("register " + un + " " + pw).getMessage();
-            if (response.equals("signedin")) { // Registration successful
-                setCurrentUser(un);
-                switchScene(event);
-            }
-            else { // Registration failed
-                loginStatus.setText("Registration Failed");
-                popupLabel.setText("Registration Failed, try again");
-                popUp.setVisible(true);
+            switch (response) {
+                case "signedin" -> {  // Registration successful
+                    setCurrentUser(un);
+                    switchScene(event);
+                }
+                case "invalid-username" -> {
+                    loginStatus.setText("Username" + un + "is already taken, try a different username");
+                    popupLabel.setText("Invalid username, try again");
+                    popUp.setVisible(true);
+                }
+                case "invalid-password" -> {
+                    loginStatus.setText("Your password needs to have 5 characters where one of which is a number");
+                    popupLabel.setText("Invalid password, try a different password");
+                    popUp.setVisible(true);
+                }
+                default -> {  // Registration failed
+                    loginStatus.setText("Registration Failed");
+                    popupLabel.setText("Registration Failed, try again");
+                    popUp.setVisible(true);
+                }
             }
         }
     }
