@@ -7,7 +7,6 @@ This project is the client side for the Jabber social media application. It is i
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Features
