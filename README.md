@@ -59,4 +59,4 @@ This project is licensed under the MIT License.
 
 ---
 
-Thank you for checking out the Jabber Frontend project!
+Thank you for checking out the Jabber Client project!
